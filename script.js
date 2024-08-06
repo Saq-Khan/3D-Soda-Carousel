@@ -75,3 +75,56 @@ infoSlider.addEventListener('transitionend', () => {
     });
 
 });
+let intervalId;
+let timeoutId;
+let isPaused = false;
+
+function startInterval() {
+  intervalId = setInterval(() => {
+    // Your interval code here
+    indexSlider++;
+    imgSlider.style.transform = `rotate(${indexSlider * -90}deg)`;
+
+    index++;
+    if (index > imgFruits.length - 1) {
+      index = 0;
+    }
+    document.querySelector(".fruit.active").classList.remove("active");
+    imgFruits[index].classList.add("active");
+
+    document.querySelector(".bg.active").classList.remove("active");
+    bg[index].classList.add("active");
+
+    if (indexInfo == 1) {
+      infoSlider.prepend(infoSlider.lastElementChild);
+    }
+    indexInfo = -1;
+    infoBox.style.justifyContent = "flex-start";
+    infoSlider.style.transform = "translateY(-25%)";
+  }, 3800);
+}
+
+function pauseInterval() {
+  if (!isPaused) {
+    clearInterval(intervalId);
+    isPaused = true;
+
+    clearTimeout(timeoutId);
+    // Set a timeout to resume the interval after 5 seconds of inactivity
+    timeoutId = setTimeout(() => {
+      isPaused = false;
+      startInterval();
+    }, 2500);
+  }
+}
+
+// Start the interval initial
+startInterval();
+
+// Example button element that pauses the interval when clicked
+nextBtn.addEventListener("click", () => {
+  pauseInterval();
+});
+prevBtn.addEventListener("click", () => {
+  pauseInterval();
+});
